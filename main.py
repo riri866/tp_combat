@@ -37,12 +37,25 @@
 # le combat
     # tant que l'équipe du joueur est en vie
         # premier a attaqué aléatoire random.choice
-    # si un personnge du joueur meure suprimme de la liste de l'équipe
-    # sinon si tout les perssonages du joueur son mort retour affichage menu
+            # retire des points de vie à l'adversaire
+        # si le personnage attaqué est à 0 points de vie
+            # le suprimé de la liste de  son équipe
+        # deuxième tour
+    # si tout les personnages du joueur sont morts
+        #  afficher défaite
+    # enregistrer le score
+    # retour a l'affichage menu
 
 # deuxième option
-    # récuperé les scores et les pseudos dans la basse de donnée
+    # récuperé les scores_user et les pseudos dans la basse de donnée
         # les affichées
+            # si l'utilisateur n'est pas dans le top 5 le score s'affiche en bas
+            # sinon afficher le top 5
+
+# scores_users
+    # si le joueur dépasse son ancient score
+        # delete le dernier score
+    # sinon garder le dernier score
 
 # troisième option
-    # ferme le terminal
+    # retour au menu
