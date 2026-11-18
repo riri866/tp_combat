@@ -14,7 +14,7 @@
 #   boucle infini
 #       demander un pseudo
 #       si le pseudo n'est pas vide
-#           retour pseudo
+#           retour pseudo  "demander question conndition boucle"
 
 # choix equipe utilisateur
 # demandée a l'utilisateur de faire son équipe
@@ -22,14 +22,14 @@
 #       affichée la liste des personnages
 #           choisir un personnage
 #           l'ajoutée a la liste équipe
-#       retour équip
+#   retour choix equipe
 
 # demandée a l'utilisateur de faire son équipe
 #   input : choisi 1 personnage
 #       vérifier choix personnage
 #   si le choix est valider
 #       suprimé le personnage choisie de la liste
-
+#   retour choix equipe utilisateur
 
 # adversaire choisie au hasard dans la liste
 #   boucle infini
@@ -40,14 +40,10 @@
 # lancer le combat
 # choisir l'équipe qui commence
 #   boucle infini
-#       si c'est au tour du joueur
-#           tour du joueur
-#           si l'équipe ordi hp=0
-#               retour joueur
-#           sinon si au tour de l'ordi
-#           sinon si l'équipe du joueur hp=0
-#               retour ordi
-#           sinon tour ordi
+#       vérifier si les equipe on encore des hp
+#           si 
+
+""""""
 
 # choisir l'equipe qui commence
 #   choix random qui commence
@@ -61,18 +57,6 @@
 
 # tour de l'ordi
 #   attaque aléatoirement une personnage de l'utilisateur
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Recuperer un choix valide
 #   boucle infini
