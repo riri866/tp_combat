@@ -4,19 +4,14 @@ from personnage import DIEUX_GREC, TITAN
 from pymongo import MongoClient
 
 client = MongoClient("mongodb://localhost:27017/")
-db = client["DIEUX_vs_TITAN"]
-col_dieux = db["DIEUX_GREC"]
-col_titan = db["TITAN"]
-col_scores = db["scores"]
-
-def initialiser_bdd():
-    if col_dieux.count_ducoments({}) == 0:
-        col_dieux.insert_many(DIEUX_GREC)
-    if col_titan.count_documents({}) == 0:
-        col_titan.insert_many(TITAN)
+db = client["tp_combat"]
+colection_dieux = db["DIEUX_GREC"]
+colection_titan = db["TITAN"]
+colection_scores = db["scores"]
 
 #MAIN
 def main():
+    initialiser_bdd()
     # boucle infini
     while True:
         # récupérer un choix valide
@@ -34,6 +29,17 @@ def main():
             # lancer quitter
             troisieme_option()
 
+# pour mettee liste dans mongo db
+def initialiser_bdd():
+#   si collection dieux vide
+    if colection_dieux.count_documents({}) == 0:
+#       # copie et insertion liste
+        colection_dieux.insert_many([d.copy() for d in DIEUX_GREC])
+#   si collection titan vide
+    if colection_titan.count_documents({}) == 0:
+#       copie et insertion liste
+        colection_titan.insert_many([t.copy() for t in TITAN])
+
 # Première option
 def premiere_option():
 #   demander le pseudo
@@ -43,7 +49,7 @@ def premiere_option():
 #   lancer le combat
     score = lancer_le_combat(equipe)
 #   enregistrer le score
-    enregistre_score(pseudo, score)
+    enregistre_les_scores(pseudo, score)
 #   afficher la fin
     print("Votre chemin s'arrete ici, Boss vaincus:", score)
 
@@ -63,7 +69,7 @@ def choix_equipe_utilisateur():
 #   crée une equipe vide
     equipe = []
 #   crée la liste des personnage disponibles
-    disponible = [perso.copy() for perso in col_dieux.find({}, {"_id": 0})]
+    disponible = [perso.copy() for perso in colection_dieux.find({}, {"_id": 0})]
 #   tant que l'equipe est inferieur a 3
     while len(equipe) < 3 and len (disponible) > 0:
 #       demandée a l'utilisateur de choisir un personnage
@@ -83,11 +89,11 @@ def demander_choisir_personnage(disponibles):
         descriptions.append(
             f"{perso['nom']} - PV: {perso['pv']} - Attaque: {perso['attaque']}"
         )
-#       récupérer un choix valide parmi dispo
-        choix = recupere_choix_valide(descriptions)
-#       sup le personnage de la liste personnage
-        perso = disponibles.pop(descriptions)
-        return perso
+#   récupérer un choix valide parmi dispo
+    choix = recupere_choix_valide(descriptions)
+#   sup le personnage de la liste personnage
+    perso = disponibles.pop(choix - 1)
+    return perso
 
 # Recuperer un choix valide
 def recupere_choix_valide(options):
@@ -127,7 +133,7 @@ def lancer_le_combat(equipe):
 #   tant que equipe est en vie
     while equipe_est_en_vie(equipe):
 #       tour du joueur
-        tour_joueur(equipe, TITAN)
+        tour_joueur(equipe, boss)
 #           si les pv du bossee sont à 0
         if boss["pv"] == 0:
 #           ajouter un au score
@@ -139,7 +145,7 @@ def lancer_le_combat(equipe):
 #           tour du boss
             tour_du_boss(equipe, boss)
 #   retour
-    return equipe
+    return score
 
 # choisir un TITAN
 def choisir_un_TITAN():
@@ -180,11 +186,13 @@ def tour_joueur(equipe, boss):
 # tour du boss
 def tour_du_boss(equipe, boss):
 #   récupérer personnages en vie du joueur
-    vivants = personnage_en_vie
-#   cible = aléatoire dans la liste equipe
-    cible = random.choices(vivants)
-#   le boss attaque
-    attaque(TITAN, cible)
+    vivants = personnage_en_vie(equipe)
+#   si liste vivant > 0
+    if len(vivants) > 0:
+#       cible = aléatoire dans la liste equipe
+        cible = random.choice(vivants)
+#       le boss attaque
+        attaque(boss, cible)
 
 # attaque
 def attaque(attaquant, cible):
@@ -215,33 +223,38 @@ def personnage_en_vie(equipe):
     return vivants
 
 # enregistrer le scores dans mongo
-def enregistre_le_scores():
-    ...
+def enregistre_les_scores(pseudo, score):
+    colection_scores.insert_one({
+        "pseudo": pseudo,
+        "score": score,
+    })
 
 # deuxième choix
 def deuxieme_option():
 #   afficher score
-    afficher_score = historique_score
+    afficher_score()
 #   permettre le retour
     input("Appuie sur entrée pour revenir au main")
 
 # afficher score
-def afficher_score(ligne):
+def afficher_score():
 #   récupérer historique score
-    historique = historique_score
+    historique = historique_score()
 #   si historique score est vide
     if len(historique) == 0:
 #       afficher aucune partie jouée
         print("aucune partie jouée")
 #   sinon
     else:
-#       afficher la ligne
-        print(f"{ligne['pseudo']} : {ligne['score']}")
+#       pour ligne dans historique
+        for ligne in historique:
+#           afficher la ligne
+            print(f"{ligne['pseudo']} : {ligne['score']}")
 
 # historique score
-def historique_score(score):
+def historique_score():
 #   récuperer l'historique Mongo
-    lignes = list(score.find({}, {"_id": 0}).sort("score", -1))
+    lignes = list(colection_scores.find({}, {"_id": 0}).sort("score", -1))
 #   retour
     return lignes
 
