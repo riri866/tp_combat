@@ -17,17 +17,15 @@
 
 # choix equipe utilisateur
 # crée une equipe vide
-# demandée a l'utilisateur de choisir un personnage
-#   tant que l'equipe est inferieur a 3
-#       affichée la liste des personnages
-#           choisir un personnage
-#           l'ajoutée a la liste équipe
-#   retour
+# tant que l'equipe est inferieur a 3
+#   affichée la liste des personnages
+#   demandée a l'utilisateur de choisir un personnage
+#   l'ajoutée a la liste équipe
+# retour
 
 # demandée a l'utilisateur de choisir un personnage
-#   input : choisi 1 personnage
 #   récupérer un choix valide parmi les personnage disponible
-#   retirer le personnage de la liste
+#   retirer le personnage de la liste personnage
 #   retour
 
 # Recuperer un choix valide
@@ -41,14 +39,15 @@
 #   définir choix valide
 #       si choix utilisateur est un nombre
 #           si le nombre est nombre est superieur au minimum ou inferieur au maximum d'options
-#               retour
-
+#               retour vrai
+#       sinon
+#           retour faux
 
 # lancer le combat
 # score = 0
 # choisir un boss
 # choisir l'équipe qui commence
-# tant que equipe en vie
+# tant que equipe est en vie
 #   si c'est au tour du joueur
 #       tour joueur
 #       si les pv du bossee sont à 0
@@ -58,11 +57,8 @@
 #       tour du boss
 #  retour
 
-# adversaire choisie au hasard dans la liste
-#   boucle infini
-#       récupérer la liste
-#       choix random dans la liste récupére
-#           si le personnage meurt le remmetre dans la liste
+# choisir un boss
+#   choisir un perso au hasard dans la liste boss
 #   retour
 
 # choisir l'equipe qui commence
@@ -70,7 +66,7 @@
 #   aficher qui commence
 #   retour
 
-# equipe en vie
+# equipe est en vie
 # récupérer les personnage en vie de l'equipe
 # si la liste n'est pas vide
 #   retour vrai
@@ -81,7 +77,6 @@
 #   si personnage en vie
 #       le personnage attaque le boss
 #       si les pv du boss = 0
-#           break
 
 # tour du boss
 #   récupérer personnages en vie du joueur
@@ -89,11 +84,11 @@
 
 # attaque
 # soustrai la vie de la cible par l'attaque de l'attaquant
+# afficher les actions
 # si les pv de la cible sont négatifs
 #   les remettre a 0
-# afficher les actions
 # si hp cible = 0
-#   la suprimée de la liste equipe
+#   afficher ko
  
 # personnage en vie 
 # crée une liste vide
@@ -101,6 +96,10 @@
 #   si c'est pv sont > 0
 #       l'ajouter a la liste
 # retour
+
+# deuxième choix
+# afficher score
+# permettre le retour
 
 # afficher score
 # récupérer historique score
@@ -111,3 +110,6 @@
 # historique score
 # enregistre les score
 # affiche le score et le pseudo
+
+# troisième option
+# stopper le procésus
