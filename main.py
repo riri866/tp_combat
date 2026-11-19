@@ -43,18 +43,6 @@
 #           si le nombre est nombre est superieur au minimum ou inferieur au maximum d'options
 #               retour
 
-# adversaire choisie au hasard dans la liste
-#   boucle infini
-#       récupérer la liste
-#       choix random dans la liste récupére
-#           si le personnage meurt le remmetre dans la liste  
-
-
-
-
-
-
-
 
 # lancer le combat
 # score = 0
@@ -70,23 +58,11 @@
 #       tour du boss
 #  retour
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# choisir un boss
-#   choisir un perso au hasard dans la liste boss
+# adversaire choisie au hasard dans la liste
+#   boucle infini
+#       récupérer la liste
+#       choix random dans la liste récupére
+#           si le personnage meurt le remmetre dans la liste
 #   retour
 
 # choisir l'equipe qui commence
@@ -117,7 +93,7 @@
 #   les remettre a 0
 # afficher les actions
 # si hp cible = 0
-#   la suprimée de la liste equipe et ecrire ko
+#   la suprimée de la liste equipe
  
 # personnage en vie 
 # crée une liste vide
