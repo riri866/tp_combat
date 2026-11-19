@@ -1,9 +1,15 @@
+import random
+import sys
+from personnage import DIEUX_GREC, TITAN
+from pymongo import MongoClient
+
+
 #MAIN
 def main():
     # boucle infini
     while True:
         # récupérer un choix valide
-        choix = recuperer_choix_valide[("Jouer", "Afficher les scores", "Quitter")]
+        choix = recupere_choix_valide[("Jouer", "Afficher les scores", "Quitter")]
         # si le choix est la première option
         if choix == 1:
             # lancer la première option
@@ -22,13 +28,13 @@ def premiere_option():
 #   demander le pseudo
     pseudo = demander_pseudo
 #   choix equipe utilisateur
-    equipe = choix_utilisateur()
+    equipe = choix_equipe_utilisateur()
 #   lancer le combat
     score = lancer_le_combat(equipe)
 #   enregistrer le score
     enregistre_score(pseudo, score)
 #   afficher la fin
-    print("Votre chemin s'arrete ici Boss vaincus:", score)
+    print("Votre chemin s'arrete ici, Boss vaincus:", score)
 
 # demander le pseudo
 def demander_pseudo():
@@ -48,11 +54,11 @@ def choix_equipe_utilisateur():
 #   crée la liste des personnage disponibles
     disponible = []
 #   pour chaque perso dans personnage
-    for perso in personnage:
+    for perso in list(DIEUX_GREC.find({}, {"_id": 0})):
 #       ajouter une copie à la liste
         disponibles.append(perso.copy())
 #   tant que l'equipe est inferieur a 3
-    while True:
+    while len(equipe) < 3 and len (disponible) > 0:
 #       demandée a l'utilisateur de choisir un personnage
         perso = demander_choisir_personnage(disponible)
 #       l'ajoutée a la liste équipe
@@ -67,87 +73,177 @@ def demander_choisir_personnage(disponibles):
 #   pour chaque personnage disponible
     for perso in disponibles:
 #       descirption perso
-        descriptions.append(perso["nom"], "pv" str(perso["pv"]), "attaque" str(perso["attaque"]))
+        descriptions.append(
+            f"{perso['nom']} - PV: {perso['pv']} - Attaque: {perso['attaque']}"
+        )
 #       récupérer un choix valide parmi dispo
-        choix = recuperer_choix_valide(descriptions)
-#       sup le 
-#   retour
+        choix = recupere_choix_valide(descriptions)
+#       sup le personnage de la liste personnage
+        perso = disponibles.pop(descriptions)
+        return
 
 # Recuperer un choix valide
+def recupere_choix_valide():
 #   boucle infini
-#       afficher les options numérotée
+    while True:
+#       pour chaque option
+        for i in range(len(options)):
+#           afficher les options numérotée
+            print(i + 1, options[i])
 #       demander un choix
+        choix = input("ton choix : ")
 #       si le choix est valide
+        if choix_est_valide(choix, len(options)):
 #           retourne
+            return
 
 # choix est valide
-#   définir choix valide
+def choix_est_valide(choix, maximum):
 #       si choix utilisateur est un nombre
+        if choix.isdigit():
 #           si le nombre est nombre est superieur au minimum ou inferieur au maximum d'options
+            if 1 <= int(choix) <= maximum:
 #               retour vrai
+                return True
 #       sinon
+        else:
 #           retour faux
+            return False
+        
 
 # lancer le combat
-# score = 0
-# choisir un boss
-# tant que equipe est en vie
-#   tour du joueur
-#       si les pv du bossee sont à 0
+def lancer_le_combat(equipe):
+#   score = 0
+    score = 0
+#   choisir un boss
+    boss = choisir_un_TITAN()
+#   tant que equipe est en vie
+    while equipe_est_en_vie(equipe):
+#       tour du joueur
+        tour_joueur(equipe, boss)
+#           si les pv du bossee sont à 0
+        if boss["pv"] == 0:
 #           ajouter un au score
+            score = score + 1
 #           choisir un nouveaux boss
+            boss = choisir_un_TITAN()
 #       sinon
+        else:
 #           tour du boss
-#  retour
+            tour_du_boss(equipe, boss)
+#   retour
+    return
 
 # choisir un boss
+def choisir_un_TITAN():
 #   choisir un perso au hasard dans la liste boss
+    boss = random.choice(TITAN).copy()
 #   retour
+    return
 
 # equipe est en vie
-# récupérer les personnage en vie de l'equipe
-# si la liste n'est pas vide
-#   retour vrai
-# sinon retour faux
+def equipe_est_en_vie():
+#   récupérer les personnage en vie de l'equipe
+    vivants = personnage_en_vie(equipe)
+#   si la liste n'est pas vide
+    if len(vivants) > 0:
+#       retour vrai
+        return True
+#   sinon
+    else:
+#       retour faux
+        return False
 
 # tour joueur
+def tour_joueur():
 #   récupérer personnage en vie
+    vivants = personnage_en_vie(equipe)
 #   si personnage en vie
+    if perso in vivants:
 #       le personnage attaque le boss
+        attaque(perso, boss)
 #       si les pv du boss = 0
+        if boss["pv"] == 0:
+            #stop la boucle
+            break
 
 # tour du boss
+def tour_du_boss():
 #   récupérer personnages en vie du joueur
+    vivants = personnage_en_vie
 #   cible = aléatoire dans la liste equipe
+    cible = random.choices(vivants)
+#   le boss attaque
+    attaque(boss, cible)
 
 # attaque
-# soustrai la vie de la cible par l'attaque de l'attaquant
-# afficher les actions
-# si les pv de la cible sont négatifs
-#   les remettre a 0
-# si hp cible = 0
-#   afficher ko
+def attaque():
+#   soustrai la vie de la cible par l'attaque de l'attaquant
+    cible["pv"] = cible["pv"] - attaquant["attaque"]
+#   si les pv de la cible sont négatifs
+    if cible["pv"] < 0:
+#       les remettre a 0
+        cible["pv"] = 0
+#   afficher les actions
+    print(attaquant["nom"], "attaque", cible["nom"])
+#   si hp cible = 0
+    if cible["pv"] == 0:
+#       afficher ko
+        print(cible["nom"], "est ko")
  
-# personnage en vie 
-# crée une liste vide
-# pour chaque personnage de l'equipe
-#   si c'est pv sont > 0
-#       l'ajouter a la liste
-# retour
+# personnage en vie
+def personnage_en_vie():
+#   crée une liste vide
+    vivants = []
+#   pour chaque personnage de l'equipe
+    for perso in equipe:
+#       si c'est pv sont > 0
+        if perso["pv"] > 0:
+#           l'ajouter a la liste
+            vivants.append(perso)
+#   retour
+    return
 
 # deuxième choix
-# afficher score
-# permettre le retour
+def deuxieme_option():
+#   afficher score
+    afficher_score = historique_score
+#   permettre le retour
+    input("Appuie sur entrée pour revenir au main")
 
 # afficher score
-# récupérer historique score
-# si historique score est vide
-#   afficher aucune partie jouée
-# sinon afficher historique score
+def afficher_score():
+#   récupérer historique score
+    historique = historique_score
+#   si historique score est vide
+    if len(historique) == 0:
+#       afficher aucune partie jouée
+        print("aucune partie jouée")
+#   sinon
+    else:
+#       afficher la ligne
+        print(ligne.strip())
 
 # historique score
-# enregistre les score
-# affiche le score et le pseudo
+def historique_score():
+#   si le fichier score inexistant
+    if not os.path.exists("scores.txt"):
+#       retour
+        return
+#   regarder scores
+    fichier = open("scores.txt", "r", encoding="utf-8")
+#   lire les lignes
+    lignes = fichier.readlines()
+#   ferme le fichier
+    fichier.close()
+#   retour
+    return
 
 # troisième option
-# stopper le procésus
+def troisieme_option():
+#   stopper le procésus
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()
