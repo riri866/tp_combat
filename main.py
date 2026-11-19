@@ -1,4 +1,5 @@
 #MAIN
+#   afficher les choix
 #   Recuperer un choix valide utilisateur parmis les options
 #   lance le processus
 
@@ -17,7 +18,7 @@
 
 # choix equipe utilisateur
 # crée une equipe vide
-# tant que l'equipe est inferieur a 3
+# tant que l'equipe est inferieur a 3 TODO
 #   affichée la liste des personnages
 #   demandée a l'utilisateur de choisir un personnage
 #   l'ajoutée a la liste équipe
@@ -46,24 +47,16 @@
 # lancer le combat
 # score = 0
 # choisir un boss
-# choisir l'équipe qui commence
 # tant que equipe est en vie
-#   si c'est au tour du joueur
-#       tour joueur
+#   tour du joueur
 #       si les pv du bossee sont à 0
 #           ajouter un au score
 #           choisir un nouveaux boss
-#   sinon
 #       tour du boss
 #  retour
 
 # choisir un boss
 #   choisir un perso au hasard dans la liste boss
-#   retour
-
-# choisir l'equipe qui commence
-#   choix random qui commence
-#   aficher qui commence
 #   retour
 
 # equipe est en vie
